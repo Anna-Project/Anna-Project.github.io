@@ -1,28 +1,106 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="./assets/img/logo-site.png">
-    <title>Namora comigo?</title>
-    <link rel="stylesheet" href="./assets//css/app.css" />
-    <script src="./assets/js/app.js" defer></script>
-  </head>
-  <body>
-    <div class="background-1"></div>
-    <div class="background-2"></div>
-    <div class="background-3">
-      <div class="cta">
-        <button class="btn" id="yes">
-          <span class="btn-text-one">Sim</span>
-          <span class="btn-text-two">Eita! 💕</span>
-        </button>
-        <button class="btn no">
-          <span class="btn-text-one">Não</span>
-          <span class="btn-text-two">😅</span>
-        </button>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Decrescente</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #808080; /* Fundo cinza */
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Esconder overflow para a chuva */
+        }
+        .container {
+            background-color: #ffffff; /* Fundo branco */
+            padding: 20px;
+            border-radius: 10px; /* Bordas arredondadas */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            margin-bottom: 20px; /* Espaço entre as caixas */
+            text-align: center;
+            z-index: 1; /* Garantir que a caixa fique sobre a chuva */
+        }
+        #timer {
+            font-size: 48px;
+            color: #8B0000; /* Vermelho escuro */
+        }
+        #message {
+            font-size: 24px;
+            color: #8B0000; /* Vermelho escuro */
+        }
+        .heart {
+            position: absolute;
+            top: -10px;
+            font-size: 24px; /* Tamanho dos corações */
+            animation: fall 5s linear infinite;
+            z-index: 0; /* Garantir que os corações fiquem atrás das caixas */
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100px); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="message">Cada segundo que passa nos aproxima de algo maravilhoso... você está pronta?</div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  </body>
+    <div class="container">
+        <div id="timer">00:00:00</div>
+    </div>
+
+    <script>
+        function updateTimer(targetDate, display) {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                display.textContent = "00:00:00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            display.textContent = 
+                (days > 0 ? days + "d " : "") +
+                (hours < 10 ? "0" + hours : hours) + ":" + 
+                (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                (seconds < 10 ? "0" + seconds : seconds);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.textContent = '🖤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        window.onload = function () {
+            const display = document.querySelector('#timer');
+            const targetDate = new Date('2024-06-09T21:00:00').getTime();
+
+            updateTimer(targetDate, display); // Initial call to set the timer immediately
+
+            setInterval(function() {
+                updateTimer(targetDate, display);
+            }, 1000);
+
+            setInterval(createHeart, 300);
+        };
+    </script>
+</body>
 </html>
