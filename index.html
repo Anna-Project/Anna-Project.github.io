@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -26,11 +25,11 @@
             text-align: center;
             z-index: 1; /* Garantir que a caixa fique sobre a chuva */
         }
-        #question {
-            font-size: 24px;
+        #timer {
+            font-size: 48px;
             color: #8B0000; /* Vermelho escuro */
         }
-        #prompt {
+        #message {
             font-size: 24px;
             color: #8B0000; /* Vermelho escuro */
         }
@@ -41,45 +40,56 @@
             animation: fall 5s linear infinite;
             z-index: 0; /* Garantir que os corações fiquem atrás das caixas */
         }
-        .buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px; /* Espaço entre os botões */
-            position: relative;
-            top: 50px; /* Posiciona os botões abaixo do bloco branco */
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            color: #ffffff;
-            background-color: #8B0000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #a00000;
-        }
         @keyframes fall {
             0% { transform: translateY(-100px); opacity: 1; }
             100% { transform: translateY(100vh); opacity: 0; }
+        }
+        .recordar-btn {
+            font-size: 24px;
+            color: #FFFFFF;
+            background-color: #8B0000; /* Vermelho escuro */
+            border: none;
+            border-radius: 10px; /* Bordas arredondadas */
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .recordar-btn:hover {
+            background-color: #a50f15; /* Vermelho mais claro */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div id="prompt">Antes de prosseguir responda a seguinte pergunta:</div>
+        <div id="message">Tempo de namoro:</div>
     </div>
     <div class="container">
-        <div id="question">Eu estou sempre certo?</div>
+        <div id="timer">00:00:00</div>
     </div>
-    <div class="buttons">
-        <button id="sim">Sim</button>
-        <button id="nao">Não</button>
-    </div>
+    <button class="recordar-btn" id="recordar-btn">Recordar ? 🖤</button>
 
     <script>
+        function updateTimer(startDate, display) {
+            const now = new Date().getTime();
+            const distance = now - startDate;
+
+            if (distance < 0) {
+                display.textContent = "00:00:00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            display.textContent = 
+                (days > 0 ? days + "d " : "") +
+                (hours < 10 ? "0" + hours : hours) + ":" + 
+                (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                (seconds < 10 ? "0" + seconds : seconds);
+        }
+
         function createHeart() {
             const heart = document.createElement('div');
             heart.className = 'heart';
@@ -94,27 +104,20 @@
         }
 
         window.onload = function () {
+            const display = document.querySelector('#timer');
+            const startDate = new Date('2024-06-14T00:00:00').getTime();
+
+            updateTimer(startDate, display); // Initial call to set the timer immediately
+
+            setInterval(function() {
+                updateTimer(startDate, display);
+            }, 1000);
+
             setInterval(createHeart, 300);
 
-            const simButton = document.getElementById("sim");
-            const naoButton = document.getElementById("nao");
-
-            simButton.addEventListener("click", () => {
-                alert("Te amo!");
-            });
-
-            const handleNao = () => {
-                naoButton.style.position = "fixed";
-                const rand = Math.random();
-                const randTop = (rand * window.innerHeight) % (window.innerHeight - naoButton.offsetHeight);
-                const randLeft = (rand * window.innerWidth) % (window.innerWidth - naoButton.offsetWidth);
-
-                naoButton.style.top = `${randTop}px`;
-                naoButton.style.left = `${randLeft}px`;
+            document.getElementById('recordar-btn').onclick = function() {
+                window.location.href = 'https://anna-project.github.io/2/';
             };
-
-            naoButton.addEventListener("click", handleNao);
-            naoButton.addEventListener("mouseover", handleNao);
         };
     </script>
 </body>
